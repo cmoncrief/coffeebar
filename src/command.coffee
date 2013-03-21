@@ -1,5 +1,12 @@
+# External dependencies
+
 program   = require 'commander'
 coffeebar = require './coffeebar'
+
+# The Coffeebar command line utility. At a minimum, this command will compile
+# an input CoffeeScript file or directory tree into JavaScript files. Additional 
+# actions such as minification, joining and file watching can be specified here 
+# as well as compiler options.
 
 module.exports.run =  ->
 

@@ -1,21 +1,22 @@
-# Jadebars
+# Coffeebar
 
-Jadebars is a tool for compiling Jade files into precompiled Handlebars templates. Jadebars comes with a command line interface as well as a public API.
+Coffeebar is a minimalistic build tool for CoffeeScript that makes compiling, watching and joining your files a breeze. Coffeebar is built to be cross-platform from the ground up and can be used either from the command line or via it's public API. 
 
 ## Installation
 
 Install globally via npm:
 
-    $ npm install -g jadebars
+    $ npm install -g coffeebar
 
 ## Usage
-    Usage: jadebars [options] [path ...]
+
+    Usage: coffeebar [options] [path ...]
 
     Options:
 
       -h, --help           output usage information
       -V, --version        output the version number
-      -m, --minify         minify output files
+      -b, --bare           compile without a top-level function wrapper
       -o, --output <path>  output path
       -s, --silent         suppress console output
       -w, --watch          watch files for changes
@@ -24,46 +25,38 @@ Install globally via npm:
 
 Compile a single file:
     
-    $ jadebars test.jade
+    $ coffeebar test.coffee
 
-Compile an entire directory tree:
+Compile an entire directory tree to an output directory:
     
-    $ jadebars test/
+    $ coffeebar src -o lib
 
-Compile to an output directory:
+Compile and join all input to a single file:
     
-    $ jadebars input/ -o output/
-
-Compile all input to a single file:
-    
-    $ jadebars input/ -o joined.js
-
-Compile with minification:
-
-    $ jadebars input/ -o joined.js -m
+    $ coffeebar src -o joined.js
 
 Compile and watch for changes:
 
-    $ jadebars input/ -o output/ -w
+    $ coffeebar src -o lib -w
 
 ## API
 
-#### jadebars(inputPaths, [options])
+#### coffeebar(inputPaths, [options])
 
-Compiles all .jade files found in `inputPaths`, which can be a single string or an array of strings. 
+Compiles all .coffee files found in `inputPaths`, which can be a single string or an array of strings. 
 
 ##### Options:
 
-* `minify` - (boolean) Compress output files. Defaults to false.
+* `bare` - (boolean) CoffeeScript compiler option which omits the top-level function wrapper if set to true.
 * `output` - (string) The path to the output file. If the path has a file extension, all files will be joined at that location. Otherwise, the path is assumed to be a directory.
 * `silent` - (boolean) Suppress all console output. Defaults to true.
 * `watch` - (boolean) Watch all files and directories for changes and recompile automatically. Defaults to false.
 
 ##### Example:
 
-    var jadebars = require('jadebars')
+    var coffeebar = require('coffeebar')
 
-    jadebars('templates', {output: 'javascripts/templates.js'})
+    coffeebar('src', {output: 'lib/app.js'})
 
 ## Running the tests
 

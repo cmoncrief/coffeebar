@@ -1,3 +1,15 @@
+# Coffeebar
+# ---------
+# Copyright (c) 2013 Charles Moncrief <cmoncrief@gmail.com>
+#
+# MIT Licensed
+
+# Coffeebar is a minimalistic CoffeeScript build utility. It supports file
+# watching, minification and concatenation of source files. Coffeebar is
+# available as a command line utility and can also be used directly from the
+# public API.
+
+# External dependencies.
 
 fs       = require 'fs'
 path     = require 'path'
@@ -6,11 +18,20 @@ coffee   = require 'coffee-script'
 glob     = require 'glob'
 mkdirp   = require 'mkdirp'
 xcolor   = require 'xcolor'
-
+ 
 Source   = require './source'
+
+# The Coffebar class is the main entry point of the API. Creating a new
+# instance will initialize and kick off a build.
 
 class Coffeebar
 
+  # Initialization
+  # --------------
+
+  # Initialize the default options and the color scheme. The join option is
+  # implied rather then specific. Once initial setup is completed, kick off
+  # the initial build.
   constructor: (@inputPaths, @options = {}) ->
     @sources = []
     @options.watch ?= false
@@ -18,15 +39,17 @@ class Coffeebar
     @options.minify ?= false
     @options.join = true if @options.output and path.extname(@options.output)
 
-    @options.coffeeOpts = {}
-    @options.coffeeOpts.bare = @options.bare or false
-    @options.coffeeOpts.header = @options.header or true
+    @options.bare ?= false
+    @options.header ?= true
 
     @initColors()
     @initPaths()
 
     @start()
 
+  # Prepare the specified input paths to be scanned by glob by assuming that
+  # we actually want to compile the entire directory tree that was passed in,
+  # unless an actual filename was passed in.
   initPaths: ->
     unless Array.isArray(@inputPaths) then @inputPaths = [@inputPaths]
 
@@ -36,11 +59,16 @@ class Coffeebar
 
     @inputPaths = (i for i in @inputPaths when path.extname(i) is '.coffee')
 
+  # Find all the src files in the input trees and create a new representation
+  # of them via the Source class.
   addSources: ->
     for inputPath in @inputPaths
       files = glob.sync inputPath
       @sources.push(new Source(@options, file)) for file in files
 
+  # Start-up the initial process by adding the sources, building them,
+  # and starting a watch on them if specified. This is only called once,
+  # subsequent builds will be called directly from the watch process.
   start: ->
     @addSources()
     @build()
@@ -48,16 +76,34 @@ class Coffeebar
     if @options.watch
       @watch i for i in @inputPaths
 
+  # Build
+  # -----
+
+  # Compile and write out all of the sources in our collection, transforming
+  # and reporting errors along the way.
   build: ->
     @compileSources()
+    @minifySources() if @options.minify
     @reportErrors()
     @writeSources()
-  
+
+  # Compile each source in the collection if it has been updated
+  # more recently than the last time it was written out. If this
+  # build is targetting a joined file, join all of the sources
+  # prior to compilation.
   compileSources: ->
     @outputs = if @options.join then @joinSources() else @sources
 
-    source.compile() for source in @outputs when source.modTime >= source.compileTime
+    source.compile() for source in @outputs when source.updated
 
+  # Minify each source in the collection if it was compiled without
+  # errors more recently than it was written out.
+  minifySources: ->
+    source.minify() for source in @outputs when source.outputReady()
+  
+  # After compilation, report each error that was logged. In the event
+  # that this is a joined output file, use the line number offset to
+  # detect which input file the error actually occurred in.
   reportErrors: ->
     if @options.join and @outputs[0].error
       offset = 0
@@ -73,18 +119,17 @@ class Coffeebar
 
     source.reportError() for source in @outputs when source.error
 
+  # Write out each source in the collection if it was compiled without
+  # error more recently than it was written out.
   writeSources: ->
-    source.write() for source in @outputs when !source.error and source.compileTime >= source.writeTime
+    source.write() for source in @outputs when source.outputReady()
 
-  joinSources: ->
-    joinSrc = ""
-    joinSrc = joinSrc.concat(i.src + "\n") for i in @sources
+  # Watch
+  # -----
 
-    joinSource = new Source(@options)
-    joinSource.src = joinSrc
-    joinSource.outputPath = @options.output
-    [joinSource]
-
+  # Watch an input path for changes, additions and removals. When
+  # an event is triggered, add or remove the source and kick off
+  # a build.
   watch: (inputPath) ->
     watcher = beholder inputPath
 
@@ -101,14 +146,34 @@ class Coffeebar
       @sources = (i for i in @sources when i.file isnt file)
       @build() if @options.join
 
+  # Utilities
+  #----------
+
+  # Join all sources by concatenating the input src code and return
+  # an array with only the newly joined source element for output.
+  joinSources: ->
+    joinSrc = ""
+    joinSrc = joinSrc.concat(i.src + "\n") for i in @sources
+
+    joinSource = new Source(@options)
+    joinSource.src = joinSrc
+    joinSource.outputPath = @options.output
+    [joinSource]
+
+  # Retrieves the source in our collection by file name.
   getSource: (file) ->
     return i for i in @sources when i.file is file
 
+  # Initialize our CLI theme with some sharp looking colors.
   initColors: ->
     xcolor.addStyle coffee     : 'chocolate'
     xcolor.addStyle boldCoffee : ['bold', 'chocolate']
     xcolor.addStyle error      : 'crimson'
 
+# Exports
+# -------
+
+# Export a new instance of Coffeebar.
 module.exports = (inputPaths, options) ->
   new Coffeebar inputPaths, options
 
