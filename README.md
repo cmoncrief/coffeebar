@@ -1,6 +1,17 @@
 # Coffeebar
 
-Coffeebar is a minimalistic build tool for CoffeeScript that makes compiling, watching and joining your files a breeze. Coffeebar is built to be cross-platform from the ground up and can be used either from the command line or via it's public API. 
+Coffeebar is a simplified build tool for CoffeeScript that makes compiling,
+watching and concatenating your files a breeze. Coffeebar is built to be 
+cross-platform from the ground up and can be used from the command line or
+via it's public API.
+
+### Features
+
+* Robust file watching
+* Cross-platform
+* Minification
+* Concatenation of multiple source files
+* Shows the actual source line when concatenated files have a compile error
 
 ## Installation
 
@@ -17,6 +28,7 @@ Install globally via npm:
       -h, --help           output usage information
       -V, --version        output the version number
       -b, --bare           compile without a top-level function wrapper
+      -m, --minify         minify output files
       -o, --output <path>  output path
       -s, --silent         suppress console output
       -w, --watch          watch files for changes
@@ -48,6 +60,7 @@ Compiles all .coffee files found in `inputPaths`, which can be a single string o
 ##### Options:
 
 * `bare` - (boolean) CoffeeScript compiler option which omits the top-level function wrapper if set to true.
+* `minify` - (boolean) Minify output files. Defaults to false.
 * `output` - (string) The path to the output file. If the path has a file extension, all files will be joined at that location. Otherwise, the path is assumed to be a directory.
 * `silent` - (boolean) Suppress all console output. Defaults to true.
 * `watch` - (boolean) Watch all files and directories for changes and recompile automatically. Defaults to false.
