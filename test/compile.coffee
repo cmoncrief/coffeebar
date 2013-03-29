@@ -18,6 +18,7 @@ describe 'Compile', ->
   before ->
     for file in files
       try fs.unlinkSync "#{fixturePath}/compile/#{file}.js"
+      try fs.unlinkSync "#{fixturePath}/compile/join.js"
       controls.push fs.readFileSync "#{fixturePath}/control/#{file}.js", 'utf8'
 
   it 'should compile a single CS file', ->
@@ -49,3 +50,4 @@ describe 'Compile', ->
   after ->
     for file in files
       try fs.unlinkSync "#{fixturePath}/compile/#{file}.js"
+      try fs.unlinkSync "#{fixturePath}/compile/join.js"

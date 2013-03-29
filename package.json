@@ -1,18 +1,30 @@
 {
   "name": "coffeebar",
   "version": "0.1.0",
-  "description": "Coffeescript build tool",
+  "author": "Charles Moncrief",
+  "description": "Simplified CoffeeScript build tool.",
   "main": "lib/coffeebar.js",
+  "bin": {
+    "coffeebar": "./bin/coffeebar"
+  },
   "scripts": {
+    "prepublish": "cake build",
     "test": "cake test"
   },
-  "repository": "",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cmoncrief/coffeebar.git"
+  },
   "keywords": [
     "coffee",
     "coffeescript",
-    "build"
+    "build",
+    "compile",
+    "minify"
   ],
-  "author": "Charles Moncrief",
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
@@ -25,6 +37,7 @@
     "glob": "~3.1.21"
   },
   "devDependencies": {
-    "mocha": "~1.8.2"
+    "mocha": "~1.8.2",
+    "coffee-script": "~1.6.2"
   }
 }
