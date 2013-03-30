@@ -74,6 +74,11 @@ class Source
   getCompileOptions: ->
     header: @options.header
     bare: @options.bare
+    literate: @isLiterate()
+
+  # Returns true if the source is Literate CoffeeScript
+  isLiterate: ->
+    /\.(litcoffee|coffee\.md)$/.test @file
 
   # Sends a log of this source's current error to the console.
   reportError: ->
@@ -84,7 +89,9 @@ class Source
   setOutputPath: ->
     return if @outputPath
 
-    fileName = path.basename(@file, '.coffee') + '.js'
+    base = path.basename @file
+    base = base.substr 0, base.indexOf '.'
+    fileName = base + '.js'
     dir = path.dirname @file
 
     if @options.output

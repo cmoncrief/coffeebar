@@ -18,8 +18,10 @@ coffee   = require 'coffee-script'
 glob     = require 'glob'
 mkdirp   = require 'mkdirp'
 xcolor   = require 'xcolor'
- 
 Source   = require './source'
+
+# Valid CoffeeScript file extentsions
+exts     = ['coffee', 'litcoffee', 'coffee.md']
 
 # The Coffebar class is the main entry point of the API. Creating a new
 # instance will initialize and kick off a build.
@@ -55,9 +57,7 @@ class Coffeebar
 
     for inputPath, i in @inputPaths
       unless path.extname(inputPath)
-        @inputPaths[i] = "#{inputPath}/**/*.coffee"
-
-    @inputPaths = (i for i in @inputPaths when path.extname(i) is '.coffee')
+        @inputPaths[i] = "#{inputPath}/**/*.{#{exts}}"
 
   # Find all the src files in the input trees and create a new representation
   # of them via the Source class.

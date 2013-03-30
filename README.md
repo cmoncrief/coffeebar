@@ -7,6 +7,7 @@ via it's public API.
 
 ### Features
 
+* Supports Literate CoffeeScript
 * Robust file watching
 * Cross-platform
 * Minification
