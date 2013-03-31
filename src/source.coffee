@@ -36,14 +36,21 @@ class Source
     @src = fs.readFileSync @file, 'utf8'
     @lines = @src.split('\n').length
     @modTime = new Date().getTime()
+    @setOutputPath()
 
   # Call the CoffeeScript compiler, and save the output. If there are any
-  # errors, stash them for reporting later and continue on.
+  # errors, stash them for reporting later and continue on. If a source
+  # map style result is returned, split it out appropriately.
   compile: ->
     try
       @error = false
       @compiled = coffee.compile @src, @getCompileOptions()
       @compileTime = new Date().getTime()
+      
+      if @compiled.js?
+        @sourceMap = @compiled.v3SourceMap
+        @compiled = @compiled.js
+    
     catch err
       @error = err.toString().replace /on line \d/, ''
       @errorFile = @file
@@ -64,8 +71,15 @@ class Source
     fs.writeFileSync @outputPath, @compiled, 'utf8'
     @writeTime = new Date().getTime()
 
+    @writeMap() if @options.sourceMap
+      
     unless @options.silent
       xcolor.log "  #{(new Date).toLocaleTimeString()} - {{.boldCoffee}}Compiled{{/color}} {{.coffee}}#{@outputPath}"
+
+  # Write out a .map file in the same directory as the compiled js.
+  writeMap: ->
+    mapOutput = @outputPath.replace '.js', '.map'
+    fs.writeFileSync mapOutput, @sourceMap, 'utf8'
 
   # Utilities
   # ---------
@@ -75,6 +89,11 @@ class Source
     header: @options.header
     bare: @options.bare
     literate: @isLiterate()
+    filename: @file
+    sourceMap: @options.sourceMap
+    sourceRoot: path.dirname @file
+    sourceFiles: [@file]
+    generatedFile: @outputPath
 
   # Returns true if the source is Literate CoffeeScript
   isLiterate: ->

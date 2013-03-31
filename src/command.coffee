@@ -11,10 +11,11 @@ coffeebar = require './coffeebar'
 module.exports.run =  ->
 
   program
-    .version('0.1.0')
+    .version('0.3.0')
     .usage('[options] [path ...]')
     .option('-b, --bare', 'compile without a top-level function wrapper')
     .option('-m, --minify', 'minify output files')
+    .option('-M, --map', 'create source maps')
     .option('-o, --output <path>', 'output path')
     .option('-s, --silent', 'suppress console output')
     .option('-w, --watch', 'watch files for changes')
@@ -22,11 +23,12 @@ module.exports.run =  ->
     program.parse process.argv
 
     options =
-      output  : program.output
-      watch   : program.watch
-      silent  : program.silent || false
-      minify  : program.minify
-      bare    : program.bare
+      output    : program.output
+      watch     : program.watch
+      silent    : program.silent || false
+      minify    : program.minify
+      sourceMap : program.map
+      bare      : program.bare
 
     console.log '' unless options.silent
     coffeebar program.args, options
