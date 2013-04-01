@@ -64,7 +64,7 @@ class Coffeebar
   addSources: ->
     for inputPath in @inputPaths
       files = glob.sync inputPath
-      @sources.push(new Source(@options, file)) for file in files
+      @sources.push(new Source(@options, file, inputPath)) for file in files
 
   # Start-up the initial process by adding the sources, building them,
   # and starting a watch on them if specified. This is only called once,
