@@ -22,6 +22,7 @@ class Source
     @writeTime = 0
     @compileTime = 0
     @modTime = 0
+    @inputPath or= @file
 
     if @file
       @inputFile = path.resolve file
