@@ -19,10 +19,11 @@ class Source
 
   # Initilization consists of setting the timestamps to zero, then resolving
   # the file name and reading it in.
-  constructor: (@options, @file = "") ->
+  constructor: (@options, @file = "", @inputPath = "") ->
     @writeTime = 0
     @compileTime = 0
     @modTime = 0
+    @inputPath or= @file
 
     if @file
       @inputFile = path.resolve file
@@ -127,7 +128,19 @@ class Source
     dir = path.dirname @file
 
     if @options.output
-      dir = dir.replace @inputFile, @options.output
+      if @inputPath[0] is path.sep
+        baseInputDir = @inputPath.replace '**/*.{coffee,litcoffee,coffee.md}', ''
+        baseInputDir = baseInputDir.replace new RegExp("#{path.basename(baseInputDir)}/$"), ''
+        baseInputDir = path.normalize baseInputDir
+        baseOutputDir = dir.replace baseInputDir, ''
+        baseFragment = baseOutputDir.substr 0, baseOutputDir.indexOf(path.sep)
+        baseDir = baseOutputDir.replace new RegExp("^#{baseFragment}"), ''
+        dir = if baseFragment then path.join(@options.output, baseDir) else @options.output
+      else if @inputPath.indexOf path.sep
+        baseDir = @inputPath.substr 0, @inputPath.indexOf(path.sep)
+        dir = dir.replace new RegExp("^#{baseDir}"), @options.output
+      else
+        dir = @options.output
 
     @outputPath = path.join dir, fileName
 
