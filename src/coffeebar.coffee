@@ -106,6 +106,9 @@ class Coffeebar
   minifySources: ->
     source.minify() for source in @outputs when source.outputReady()
   
+  # Source maps
+  # -----------
+
   # Append the source map comments to each output file. In the case of
   # a joined file, we take the mappings that came out of the compiler
   # and remap them to the original source files, rather than the joined
@@ -122,29 +125,14 @@ class Coffeebar
 
     @outputs[0].writeMapComment smNew.toString()
 
-  # After writing out a joined output file with source maps enabled we
-  # write out a special mapping directory next to it that contains all of
-  # the original source files. The source map itself points to this directory
-  # rather than the original files.
-  writeJoinSources: ->
-    outputPath = path.join path.dirname(@options.output), "#{path.basename(@options.output, '.js')}_mapsrc"
-    source.writeSource(outputPath) for source in @sources when source.outputReady()
-
   # After compilation, report each error that was logged. In the event
   # that this is a joined output file, use the line number offset to
   # detect which input file the error actually occurred in.
   reportErrors: ->
     if @options.join and @outputs[0].error
-      offset = 0
-      for source in @sources
-        if offset + source.lines > @outputs[0].errorLine
-          errorFile = source.file
-          break
-        else
-          offset += source.lines
-
-      @outputs[0].errorLine = @outputs[0].errorLine - offset
-      @outputs[0].errorFile = errorFile
+      source = @getOriginalSource @outputs[0].errorLine
+      @outputs[0].errorLine = @outputs[0].errorLine - source.offset
+      @outputs[0].errorFile = source.file
 
     source.reportError() for source in @outputs when source.error
 
@@ -152,6 +140,14 @@ class Coffeebar
   # error more recently than it was written out.
   writeSources: ->
     source.write() for source in @outputs when source.outputReady()
+
+  # After writing out a joined output file with source maps enabled we
+  # write out a special mapping directory next to it that contains all of
+  # the original source files. The source map itself points to this directory
+  # rather than the original files.
+  writeJoinSources: ->
+    outputPath = path.join path.dirname(@options.output), "#{path.basename(@options.output, '.js')}_mapsrc"
+    source.writeSource(outputPath) for source in @sources when source.outputReady()
 
   # Watch
   # -----

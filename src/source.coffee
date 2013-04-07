@@ -54,10 +54,9 @@ class Source
         @compiled = @compiled.js
     
     catch err
-      @error = err.toString().replace /on line \d/, ''
+      @error = err.toString()
       @errorFile = @file
-      line = /on line (\d)/.exec(err)
-      @errorLine = if line?[1]? then line[1] else 0
+      @errorLine = err.location.first_line
 
   # Transform the compiled source by passing it through Uglify-JS.
   minify: ->
@@ -116,7 +115,7 @@ class Source
 
   # Sends a log of this source's current error to the console.
   reportError: ->
-    xcolor.log "  #{(new Date).toLocaleTimeString()} - {{bold}}{{.error}}#{@errorFile}:{{/bold}} #{@error} on line #{@errorLine}"  
+    xcolor.log "  #{(new Date).toLocaleTimeString()} - {{bold}}{{.error}}#{@errorFile}:{{/bold}} #{@error} on line #{@errorLine + 1}"  
 
   # Sets the output path for this source based on a combination of the input
   # file and the passed in options.
