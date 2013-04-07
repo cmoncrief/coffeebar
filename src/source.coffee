@@ -1,11 +1,12 @@
 # External dependencies
 
-fs     = require 'fs'
-path   = require 'path'
-mkdirp = require 'mkdirp'
-xcolor = require 'xcolor'
-coffee = require 'coffee-script'
-uglify = require 'uglify-js'
+fs        = require 'fs'
+path      = require 'path'
+mkdirp    = require 'mkdirp'
+xcolor    = require 'xcolor'
+coffee    = require 'coffee-script'
+uglify    = require 'uglify-js'
+sourcemap = require 'source-map'
 
 # The Source class represents a file containing source code. It knows
 # how to read a file in, compile it, transform it, and then write it
@@ -48,7 +49,7 @@ class Source
       @compileTime = new Date().getTime()
       
       if @compiled.js?
-        @sourceMap = @compiled.v3SourceMap
+        @sourceMap = JSON.parse @compiled.v3SourceMap
         @compiled = @compiled.js
     
     catch err
@@ -70,16 +71,28 @@ class Source
     mkdirp.sync path.dirname(@outputPath)
     fs.writeFileSync @outputPath, @compiled, 'utf8'
     @writeTime = new Date().getTime()
-
-    @writeMap() if @options.sourceMap
       
+    @writeMapSource() if @options.sourceMap and @options.output and !@options.join 
+
     unless @options.silent
       xcolor.log "  #{(new Date).toLocaleTimeString()} - {{.boldCoffee}}Compiled{{/color}} {{.coffee}}#{@outputPath}"
 
+  writeSource: (base) ->
+    outputPath = path.join base, @file
+    mkdirp.sync path.dirname(outputPath)
+    fs.writeFileSync outputPath, @src, 'utf8'
+
+  writeMapSource: ->
+    unless @options.join
+      mapOutput = @outputPath.replace '.js', '.coffeemap'
+      fs.writeFileSync mapOutput, @src, 'utf8'
+      return
+
   # Write out a .map file in the same directory as the compiled js.
-  writeMap: ->
-    mapOutput = @outputPath.replace '.js', '.map'
-    fs.writeFileSync mapOutput, @sourceMap, 'utf8'
+  writeMapComment: (map = @sourceMap) ->
+    commentMap = new Buffer(map).toString('base64')
+    commentMap = "//@ sourceMappingURL=data:application/json;base64,#{commentMap}"
+    @compiled = "#{@compiled}\n#{commentMap}"
 
   # Utilities
   # ---------

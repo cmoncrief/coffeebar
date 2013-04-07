@@ -10,7 +10,3 @@
   }
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=numbers.map
-*/

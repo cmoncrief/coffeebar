@@ -11,14 +11,15 @@
 
 # External dependencies.
 
-fs       = require 'fs'
-path     = require 'path'
-beholder = require 'beholder'
-coffee   = require 'coffee-script'
-glob     = require 'glob'
-mkdirp   = require 'mkdirp'
-xcolor   = require 'xcolor'
-Source   = require './source'
+fs        = require 'fs'
+path      = require 'path'
+beholder  = require 'beholder'
+coffee    = require 'coffee-script'
+glob      = require 'glob'
+mkdirp    = require 'mkdirp'
+xcolor    = require 'xcolor'
+Source    = require './source'
+sourcemap = require 'source-map'
 
 # Valid CoffeeScript file extentsions
 exts     = ['coffee', 'litcoffee', 'coffee.md']
@@ -65,6 +66,7 @@ class Coffeebar
     for inputPath in @inputPaths
       files = glob.sync inputPath
       @sources.push(new Source(@options, file)) for file in files
+    @offsetSources()
 
   # Start-up the initial process by adding the sources, building them,
   # and starting a watch on them if specified. This is only called once,
@@ -83,9 +85,11 @@ class Coffeebar
   # and reporting errors along the way.
   build: ->
     @compileSources()
+    @mapSources() if @options.sourceMap
     @minifySources() if @options.minify
     @reportErrors()
     @writeSources()
+    @writeJoinSources() if @options.sourceMap and @options.join
 
   # Compile each source in the collection if it has been updated
   # more recently than the last time it was written out. If this
@@ -101,6 +105,22 @@ class Coffeebar
   minifySources: ->
     source.minify() for source in @outputs when source.outputReady()
   
+  mapSources: ->
+    unless @options.join
+      source.writeMapComment() for source in @sources 
+      return
+
+    smOld = new sourcemap.SourceMapConsumer @outputs[0].sourceMap
+    smNew = new sourcemap.SourceMapGenerator {file: smOld.file}
+
+    smOld.eachMapping (map) => smNew.addMapping(@offsetMapping map)
+
+    @outputs[0].writeMapComment smNew.toString()
+
+  writeJoinSources: ->
+    outputPath = path.join path.dirname(@options.output), "#{path.basename(@options.output, '.js')}_mapsrc"
+    source.writeSource(outputPath) for source in @sources
+
   # After compilation, report each error that was logged. In the event
   # that this is a joined output file, use the line number offset to
   # detect which input file the error actually occurred in.
@@ -148,6 +168,23 @@ class Coffeebar
 
   # Utilities
   #----------
+
+  offsetSources: ->
+    offset = 0
+    for source in @sources
+      source.offset = offset
+      offset += source.lines
+
+  getOriginalSource: (line) ->
+    for source in @sources
+      return source if source.offset + source.lines > line
+
+  offsetMapping: (map) ->
+    source = @getOriginalSource map.originalLine
+    newMap = 
+      generated: {line: map.generatedLine, column: map.generatedColumn}
+      original: {line: map.originalLine - source.offset, column: map.originalColumn}
+      source: source.file
 
   # Join all sources by concatenating the input src code and return
   # an array with only the newly joined source element for output.
