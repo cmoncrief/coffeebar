@@ -78,19 +78,21 @@ class Source
     unless @options.silent
       xcolor.log "  #{(new Date).toLocaleTimeString()} - {{.boldCoffee}}Compiled{{/color}} {{.coffee}}#{@outputPath}"
 
+  # Writes out the uncompiled source file. This is used for source mapping to place
+  # a copy of the original file next to the compiled version.
   writeSource: (base) ->
     outputPath = path.join base, @file
     mkdirp.sync path.dirname(outputPath)
     fs.writeFileSync outputPath, @src, 'utf8'
 
+  # Write out the uncompiled source file side-by-side with the output file.
   writeMapSource: ->
-    unless @options.join
-      mapOutput = @outputPath.replace '.js', '.coffeemap'
-      fs.writeFileSync mapOutput, @src, 'utf8'
-      return
+    mapOutput = @outputPath.replace '.js', '.coffee'
+    fs.writeFileSync mapOutput, @src, 'utf8'
 
-  # Write out a .map file in the same directory as the compiled js.
-  writeMapComment: (map = @sourceMap) ->
+  # Append the compiled output with a source map comment.
+  writeMapComment: (map) ->
+    map or= JSON.stringify @sourceMap
     commentMap = new Buffer(map).toString('base64')
     commentMap = "//@ sourceMappingURL=data:application/json;base64,#{commentMap}"
     @compiled = "#{@compiled}\n#{commentMap}"
@@ -105,8 +107,7 @@ class Source
     literate: @isLiterate()
     filename: @file
     sourceMap: @options.sourceMap
-    sourceRoot: path.dirname @file
-    sourceFiles: [@file]
+    sourceFiles: [if @options.join then @file else path.basename @file]
     generatedFile: @outputPath
 
   # Returns true if the source is Literate CoffeeScript

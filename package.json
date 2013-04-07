@@ -1,6 +1,6 @@
 {
   "name": "coffeebar",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "author": "Charles Moncrief",
   "description": "Simplified CoffeeScript build tool.",
   "main": "lib/coffeebar.js",
@@ -24,7 +24,10 @@
     "build",
     "compile",
     "minify",
-    "literate"
+    "literate",
+    "sourcemap",
+    "source",
+    "map"
   ],
   "license": "MIT",
   "readmeFilename": "README.md",
@@ -39,6 +42,7 @@
   },
   "devDependencies": {
     "mocha": "~1.8.2",
-    "coffee-script": "~1.6.2"
+    "coffee-script": "~1.6.2",
+    "rimraf": "~2.1.4"
   }
 }

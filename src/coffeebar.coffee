@@ -40,6 +40,8 @@ class Coffeebar
     @options.watch ?= false
     @options.silent ?= true
     @options.minify ?= false
+    @options.sourceMap ?= false
+    @options.sourceMap = false if @options.minify
     @options.join = true if @options.output and path.extname(@options.output)
 
     @options.bare ?= false
@@ -66,7 +68,6 @@ class Coffeebar
     for inputPath in @inputPaths
       files = glob.sync inputPath
       @sources.push(new Source(@options, file, inputPath)) for file in files
-    @offsetSources()
 
   # Start-up the initial process by adding the sources, building them,
   # and starting a watch on them if specified. This is only called once,
@@ -84,6 +85,7 @@ class Coffeebar
   # Compile and write out all of the sources in our collection, transforming
   # and reporting errors along the way.
   build: ->
+    @offsetSources()
     @compileSources()
     @mapSources() if @options.sourceMap
     @minifySources() if @options.minify
@@ -97,7 +99,6 @@ class Coffeebar
   # prior to compilation.
   compileSources: ->
     @outputs = if @options.join then @joinSources() else @sources
-
     source.compile() for source in @outputs when source.updated
 
   # Minify each source in the collection if it was compiled without
@@ -105,21 +106,29 @@ class Coffeebar
   minifySources: ->
     source.minify() for source in @outputs when source.outputReady()
   
+  # Append the source map comments to each output file. In the case of
+  # a joined file, we take the mappings that came out of the compiler
+  # and remap them to the original source files, rather than the joined
+  # src file that we sent to the compiler.
   mapSources: ->
     unless @options.join
       source.writeMapComment() for source in @sources 
       return
 
+    return unless @outputs[0].sourceMap
     smOld = new sourcemap.SourceMapConsumer @outputs[0].sourceMap
-    smNew = new sourcemap.SourceMapGenerator {file: smOld.file}
-
+    smNew = new sourcemap.SourceMapGenerator {file: smOld.file, sourceRoot: "#{path.basename(@options.output, '.js')}_mapsrc"}
     smOld.eachMapping (map) => smNew.addMapping(@offsetMapping map)
 
     @outputs[0].writeMapComment smNew.toString()
 
+  # After writing out a joined output file with source maps enabled we
+  # write out a special mapping directory next to it that contains all of
+  # the original source files. The source map itself points to this directory
+  # rather than the original files.
   writeJoinSources: ->
     outputPath = path.join path.dirname(@options.output), "#{path.basename(@options.output, '.js')}_mapsrc"
-    source.writeSource(outputPath) for source in @sources
+    source.writeSource(outputPath) for source in @sources when source.outputReady()
 
   # After compilation, report each error that was logged. In the event
   # that this is a joined output file, use the line number offset to
@@ -169,18 +178,21 @@ class Coffeebar
   # Utilities
   #----------
 
+  # Record the line offsets for each source file for later use.
   offsetSources: ->
     offset = 0
     for source in @sources
       source.offset = offset
       offset += source.lines
 
+  # Retrieves the original source from a joined line number.
   getOriginalSource: (line) ->
     for source in @sources
       return source if source.offset + source.lines > line
 
+  # Remaps a source mappping from the joined version to the original files.
   offsetMapping: (map) ->
-    source = @getOriginalSource map.originalLine
+    source = @getOriginalSource map.originalLine - 1
     newMap = 
       generated: {line: map.generatedLine, column: map.generatedColumn}
       original: {line: map.originalLine - source.offset, column: map.originalColumn}

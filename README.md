@@ -7,12 +7,14 @@ via it's public API.
 
 ### Features
 
-* Supports Literate CoffeeScript
+* Generates source maps
+* Literate CoffeeScript support
+* Concatenation of multiple source files
 * Robust file watching
 * Cross-platform
 * Minification
-* Concatenation of multiple source files
-* Shows the actual source line when concatenated files have a compile error
+* Source maps generated from a concatenated file point back to the original files 
+* Compiler error messages show the original source line for concatenated files 
 
 ## Installation
 
@@ -29,6 +31,7 @@ Install globally via npm:
       -h, --help           output usage information
       -V, --version        output the version number
       -b, --bare           compile without a top-level function wrapper
+      -M, --map            create source maps
       -m, --minify         minify output files
       -o, --output <path>  output path
       -s, --silent         suppress console output
@@ -42,15 +45,15 @@ Compile a single file:
 
 Compile an entire directory tree to an output directory:
     
-    $ coffeebar src -o lib
+    $ coffeebar -o lib src 
 
-Compile and join all input to a single file:
+Compile and join all input to a single file with a source map:
     
-    $ coffeebar src -o joined.js
+    $ coffeebar -Mo joined.js src 
 
 Compile and watch for changes:
 
-    $ coffeebar src -o lib -w
+    $ coffeebar -wo lib src 
 
 ## API
 
@@ -60,10 +63,11 @@ Compiles all .coffee files found in `inputPaths`, which can be a single string o
 
 ##### Options:
 
-* `bare` - (boolean) CoffeeScript compiler option which omits the top-level function wrapper if set to true.
-* `minify` - (boolean) Minify output files. Defaults to false.
-* `output` - (string) The path to the output file. If the path has a file extension, all files will be joined at that location. Otherwise, the path is assumed to be a directory.
-* `silent` - (boolean) Suppress all console output. Defaults to true.
+* `bare` - CoffeeScript compiler option which omits the top-level function wrapper if set to true.
+* `minify` - Minify output files. Defaults to false.
+* `output` - The path to the output file. If the path has a file extension, all files will be joined at that location. Otherwise, the path is assumed to be a directory.
+* `silent` - Suppress all console output. Defaults to true.
+* `sourceMap` - Generate source maps for output files. Not currentl compatible with minification. Defaults to false.
 * `watch` - (boolean) Watch all files and directories for changes and recompile automatically. Defaults to false.
 
 ##### Example:
