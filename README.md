@@ -1,5 +1,7 @@
 # Coffeebar
 
+[![Build Status](https://travis-ci.org/cmoncrief/coffeebar.png)](https://travis-ci.org/cmoncrief/coffeebar)
+
 Coffeebar is a simplified build tool for CoffeeScript that makes compiling,
 watching and concatenating your files a breeze. Coffeebar is built to be 
 cross-platform from the ground up and can be used from the command line or

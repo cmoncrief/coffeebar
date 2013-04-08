@@ -2,6 +2,7 @@
 =================
 * Added support for source maps.
 * Updated error messagging to support CoffeeScript 1.6.2.
+* Added Travis CI.
 
 4/4/2013 - 0.2.2
 ==================
