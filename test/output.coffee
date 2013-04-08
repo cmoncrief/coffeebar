@@ -2,6 +2,7 @@ assert    = require 'assert'
 fs        = require 'fs'
 path      = require 'path'
 coffeebar = require '../lib/coffeebar'
+rimraf    = require 'rimraf'
 
 fixturePath = path.join __dirname, 'fixtures/output'
 
@@ -19,7 +20,7 @@ files = [
 describe 'Output', ->
 
   before ->
-    try fs.unlinkSync outputFile
+    removeTestFiles()
 
   it 'should write to the same directory', ->
     coffeebar inputFile
@@ -35,7 +36,9 @@ describe 'Output', ->
     assert fs.existsSync path.join(outputDir, "input.js")
 
   after ->
-    try fs.unlinkSync outputFile
-    try fs.unlinkSync path.join(outputDir, "input.js")
-    for file in files
-      try fs.unlinkSync path.join(outputDir, file)
+    removeTestFiles()
+
+removeTestFiles = ->
+  try fs.unlinkSync outputFile
+  try fs.unlinkSync path.join(outputDir, "input.js")
+  rimraf.sync "#{fixturePath}/output"
