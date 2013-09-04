@@ -62,6 +62,7 @@ class Coffeebar
     unless Array.isArray(@inputPaths) then @inputPaths = [@inputPaths]
 
     for inputPath, i in @inputPaths
+      @inputPaths[i] = inputPath = path.normalize inputPath
       unless path.extname(inputPath)
         @inputPaths[i] = "#{inputPath}/**/*.{#{exts}}"
 
