@@ -96,6 +96,16 @@ class Source
     commentMap = "//@ sourceMappingURL=data:application/json;base64,#{commentMap}"
     @compiled = "#{@compiled}\n#{commentMap}"
 
+  # Save the source map to an external file.
+  writeMapCommentExt: (map) ->
+    mkdirp.sync path.dirname @outputPath
+    mapOutput = @outputPath.replace '.js', '.map'
+    map or= JSON.stringify @sourceMap
+    fs.writeFileSync mapOutput, map, 'utf8'
+    mapName = path.basename mapOutput
+    commentMap = "//@ sourceMappingURL=#{mapName}"
+    @compiled = "#{@compiled}\n#{commentMap}"
+
   # Utilities
   # ---------
 

@@ -15,7 +15,8 @@ module.exports.run =  ->
     .usage('[options] [path ...]')
     .option('-b, --bare', 'compile without a top-level function wrapper')
     .option('-m, --minify', 'minify output files')
-    .option('-M, --map', 'create source maps')
+    .option('-M, --map', 'create source maps, appended to the JS file')
+    .option('-x, --extmap', 'create source maps, shipped in a separate file')
     .option('-o, --output <path>', 'output path')
     .option('-s, --silent', 'suppress console output')
     .option('-w, --watch', 'watch files for changes')
@@ -28,6 +29,7 @@ module.exports.run =  ->
       silent    : program.silent || false
       minify    : program.minify
       sourceMap : program.map
+      extSourceMap : program.extmap
       bare      : program.bare
 
     console.log '' unless options.silent
