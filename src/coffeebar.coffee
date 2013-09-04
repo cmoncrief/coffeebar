@@ -126,7 +126,7 @@ class Coffeebar
 
     return unless @outputs[0].sourceMap
     smOld = new sourcemap.SourceMapConsumer @outputs[0].sourceMap
-    smNew = new sourcemap.SourceMapGenerator {file: smOld.file, sourceRoot: "#{path.basename(@options.output, '.js')}_mapsrc"}
+    smNew = new sourcemap.SourceMapGenerator {file: (path.basename smOld.file), sourceRoot: "#{path.basename(@options.output, '.js')}_mapsrc"}
     smOld.eachMapping (map) => smNew.addMapping(@offsetMapping map)
 
     unless @options.extSourceMap
