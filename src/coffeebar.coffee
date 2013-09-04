@@ -40,8 +40,11 @@ class Coffeebar
     @options.watch ?= false
     @options.silent ?= true
     @options.minify ?= false
+    @options.extSourceMap ?= false
+    @options.extSourceMap = false if @options.minify
     @options.sourceMap ?= false
     @options.sourceMap = false if @options.minify
+    @options.sourceMap = @options.sourceMap or @options.extSourceMap
     @options.join = true if @options.output and path.extname(@options.output)
 
     @options.bare ?= false
@@ -59,6 +62,7 @@ class Coffeebar
     unless Array.isArray(@inputPaths) then @inputPaths = [@inputPaths]
 
     for inputPath, i in @inputPaths
+      @inputPaths[i] = inputPath = path.normalize inputPath
       unless path.extname(inputPath)
         @inputPaths[i] = "#{inputPath}/**/*.{#{exts}}"
 
@@ -115,15 +119,21 @@ class Coffeebar
   # src file that we sent to the compiler.
   mapSources: ->
     unless @options.join
-      source.writeMapComment() for source in @sources 
+      unless @options.extSourceMap
+        source.writeMapComment() for source in @sources
+      else
+        source.writeMapCommentExt() for source in @sources
       return
 
     return unless @outputs[0].sourceMap
     smOld = new sourcemap.SourceMapConsumer @outputs[0].sourceMap
-    smNew = new sourcemap.SourceMapGenerator {file: smOld.file, sourceRoot: "#{path.basename(@options.output, '.js')}_mapsrc"}
+    smNew = new sourcemap.SourceMapGenerator {file: (path.basename smOld.file), sourceRoot: "#{path.basename(@options.output, '.js')}_mapsrc"}
     smOld.eachMapping (map) => smNew.addMapping(@offsetMapping map)
 
-    @outputs[0].writeMapComment smNew.toString()
+    unless @options.extSourceMap
+      @outputs[0].writeMapComment smNew.toString()
+    else
+      @outputs[0].writeMapCommentExt smNew.toString()
 
   # After compilation, report each error that was logged. In the event
   # that this is a joined output file, use the line number offset to

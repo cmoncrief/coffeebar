@@ -33,7 +33,8 @@ Install globally via npm:
       -h, --help           output usage information
       -V, --version        output the version number
       -b, --bare           compile without a top-level function wrapper
-      -M, --map            create source maps
+      -M, --map            create source maps, appended to the JS file
+      -x, --extmap         create source maps, shipped in a separate file
       -m, --minify         minify output files
       -o, --output <path>  output path
       -s, --silent         suppress console output
@@ -69,7 +70,8 @@ Compiles all .coffee files found in `inputPaths`, which can be a single string o
 * `minify` - Minify output files. Defaults to false.
 * `output` - The path to the output file. If the path has a file extension, all files will be joined at that location. Otherwise, the path is assumed to be a directory.
 * `silent` - Suppress all console output. Defaults to true.
-* `sourceMap` - Generate source maps for output files. Not currentl compatible with minification. Defaults to false.
+* `sourceMap` - Generate source maps for output files, and append them to the JS. Not currentl compatible with minification. Defaults to false.
+* `extSourceMap` - Generate source maps for output files, and save them in saparate files. Not currentl compatible with minification. Defaults to false.
 * `watch` - (boolean) Watch all files and directories for changes and recompile automatically. Defaults to false.
 
 ##### Example:
