@@ -1,6 +1,6 @@
-# Coffeebar
+# Coffeebar [![Build Status](https://travis-ci.org/cmoncrief/coffeebar.png)](https://travis-ci.org/cmoncrief/coffeebar) 
+[![NPM](https://nodei.co/npm/coffeebar.png)](https://nodei.co/npm/coffeebar/)
 
-[![Build Status](https://travis-ci.org/cmoncrief/coffeebar.png)](https://travis-ci.org/cmoncrief/coffeebar)
 
 Coffeebar is a simplified build tool for CoffeeScript that makes compiling,
 watching and concatenating your files a breeze. Coffeebar is built to be 

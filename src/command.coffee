@@ -11,7 +11,7 @@ coffeebar = require './coffeebar'
 module.exports.run =  ->
 
   program
-    .version('0.3.0')
+    .version('0.3.1')
     .usage('[options] [path ...]')
     .option('-b, --bare', 'compile without a top-level function wrapper')
     .option('-m, --minify', 'minify output files')
