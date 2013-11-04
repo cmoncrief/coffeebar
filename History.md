@@ -1,3 +1,7 @@
+11/3/2014 - 0.3.1
+=================
+* Updated coffee-script, commander, uglify-js, glob, and source-map dependencies.
+
 4/7/2013 - 0.3.0
 =================
 * Added support for source maps.
