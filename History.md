@@ -1,3 +1,7 @@
+11/4/2014 - 0.3.2
+=================
+* All input paths are now normalized to fix an issue on Windows systems.
+
 11/3/2014 - 0.3.1
 =================
 * Updated coffee-script, commander, uglify-js, glob, and source-map dependencies.
