@@ -5,6 +5,7 @@ path      = require 'path'
 mkdirp    = require 'mkdirp'
 xcolor    = require 'xcolor'
 coffee    = require 'coffee-script'
+growly    = require 'growly'
 uglify    = require 'uglify-js'
 sourcemap = require 'source-map'
 
@@ -115,6 +116,10 @@ class Source
 
   # Sends a log of this source's current error to the console.
   reportError: ->
+    try 
+      growly.notify "Error: #{@errorFile} line #{@errorLine + 1}", {title: 'Coffeebar', icon: path.join(__dirname, '../icon.png')}
+    catch error
+      console.log error
     xcolor.log "  #{(new Date).toLocaleTimeString()} - {{bold}}{{.error}}#{@errorFile}:{{/bold}} #{@error} on line #{@errorLine + 1}"  
 
   # Sets the output path for this source based on a combination of the input
