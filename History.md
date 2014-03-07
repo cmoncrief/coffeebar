@@ -1,8 +1,13 @@
-11/4/2014 - 0.3.2
+3/7/2014 - 0.4.0
+=================
+* Updated CoffeeScript to 1.7.1
+* Updated Beholder to 0.2.0 to fix an issue with file watch on latest Node version
+
+11/4/2013 - 0.3.2
 =================
 * All input paths are now normalized to fix an issue on Windows systems.
 
-11/3/2014 - 0.3.1
+11/3/2013 - 0.3.1
 =================
 * Updated coffee-script, commander, uglify-js, glob, and source-map dependencies.
 

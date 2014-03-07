@@ -21,16 +21,16 @@ describe 'Source maps', ->
 
   it 'should create a source map for a single file', ->
     coffeebar "letters.coffee", {sourceMap: true}
-    
+
     testFile = fs.readFileSync "#{fixturePath}/map/letters.js", 'utf8'
     controlFile = fs.readFileSync "#{fixturePath}/control/mapletters.js", 'utf8'
-    
+
     assert.equal testFile, controlFile
 
   it 'should create source maps for an output tree', ->
     testFiles = []; testFileSources = []; controlFiles = []
     coffeebar "compile", {sourceMap: true, output: "output"}
-    
+
     for file in files
       testFiles.push fs.readFileSync "#{fixturePath}/map/output/#{file}.js", 'utf8'
       testFileSources.push fs.readFileSync "#{fixturePath}/map/output/#{file}.coffee", 'utf8'
@@ -45,7 +45,7 @@ describe 'Source maps', ->
 
   it 'should create source maps for a joined file', ->
     coffeebar "compile", {sourceMap: true, output: "join.js"}
-    
+
     testFile = fs.readFileSync "#{fixturePath}/map/join.js", 'utf8'
     controlFile = fs.readFileSync "#{fixturePath}/control/mapjoin.js", 'utf8'
 
