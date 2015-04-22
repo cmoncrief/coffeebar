@@ -1,6 +1,6 @@
 {
   "name": "coffeebar",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "Charles Moncrief",
   "description": "Simplified CoffeeScript build tool.",
   "main": "lib/coffeebar.js",
@@ -32,18 +32,18 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "commander": "~2.1.0",
+    "commander": "~2.8.0",
     "beholder": "0.2.0",
     "xcolor": "~0.1.0",
-    "coffee-script": "1.7.1",
-    "uglify-js": "~2.4.2",
-    "mkdirp": "~0.3.5",
-    "glob": "~3.2.6",
-    "source-map": "~0.1.31"
+    "coffee-script": "1.9.2",
+    "uglify-js": "~2.4.20",
+    "mkdirp": "~0.5.0",
+    "glob": "~5.0.5",
+    "source-map": "~0.4.2"
   },
   "devDependencies": {
-    "mocha": "~1.17.1",
-    "coffee-script": "1.7.1",
-    "rimraf": "~2.2.2"
+    "mocha": "~2.2.4",
+    "coffee-script": "1.9.2",
+    "rimraf": "~2.3.2"
   }
 }

@@ -26,13 +26,13 @@ class Source
     @inputPath or= @file
 
     if @file
-      @inputFile = path.resolve file
+      @inputFile = path.resolve @file
       @read()
 
   # Actions
   # -------
 
-  # Read in the source file from disk and store the number of lines for 
+  # Read in the source file from disk and store the number of lines for
   # later use in reporting errors in joined filed.
   read: ->
     @src = fs.readFileSync @file, 'utf8'
@@ -48,11 +48,11 @@ class Source
       @error = false
       @compiled = coffee.compile @src, @getCompileOptions()
       @compileTime = new Date().getTime()
-      
+
       if @compiled.js?
         @sourceMap = JSON.parse @compiled.v3SourceMap
         @compiled = @compiled.js
-    
+
     catch err
       @error = err.toString()
       @errorFile = @file
@@ -71,8 +71,8 @@ class Source
     mkdirp.sync path.dirname(@outputPath)
     fs.writeFileSync @outputPath, @compiled, 'utf8'
     @writeTime = new Date().getTime()
-      
-    @writeMapSource() if @options.sourceMap and @options.output and !@options.join 
+
+    @writeMapSource() if @options.sourceMap and @options.output and !@options.join
 
     unless @options.silent
       xcolor.log "  #{(new Date).toLocaleTimeString()} - {{.boldCoffee}}Compiled{{/color}} {{.coffee}}#{@outputPath}"
@@ -115,7 +115,7 @@ class Source
 
   # Sends a log of this source's current error to the console.
   reportError: ->
-    xcolor.log "  #{(new Date).toLocaleTimeString()} - {{bold}}{{.error}}#{@errorFile}:{{/bold}} #{@error} on line #{@errorLine + 1}"  
+    xcolor.log "  #{(new Date).toLocaleTimeString()} - {{bold}}{{.error}}#{@errorFile}:{{/bold}} #{@error} on line #{@errorLine + 1}"
 
   # Sets the output path for this source based on a combination of the input
   # file and the passed in options.
@@ -157,4 +157,3 @@ class Source
 
 # Export the Source class.
 module.exports = Source
-

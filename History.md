@@ -1,3 +1,10 @@
+4/21/2015 - 0.5.0
+=================
+* Updated CoffeeScript to 1.9.2
+* Updated all other dependencies.
+* Fixed a bug in the source create constructor.
+* Altered some of the test asserts for sanity.
+
 3/7/2014 - 0.4.0
 =================
 * Updated CoffeeScript to 1.7.1
