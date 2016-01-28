@@ -35,7 +35,7 @@
     "commander": "~2.8.0",
     "beholder": "0.2.0",
     "xcolor": "~0.1.0",
-    "coffee-script": "1.9.2",
+    "coffee-script": "1.10.0",
     "uglify-js": "~2.4.20",
     "mkdirp": "~0.5.0",
     "glob": "~5.0.5",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "mocha": "~2.2.4",
-    "coffee-script": "1.9.2",
+    "coffee-script": "1.10.0",
     "rimraf": "~2.3.2"
   }
 }
