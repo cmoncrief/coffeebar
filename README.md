@@ -1,9 +1,9 @@
-# Coffeebar [![Build Status](https://travis-ci.org/cmoncrief/coffeebar.png)](https://travis-ci.org/cmoncrief/coffeebar) 
+# Coffeebar [![Build Status](https://travis-ci.org/cmoncrief/coffeebar.png)](https://travis-ci.org/cmoncrief/coffeebar)
 [![NPM](https://nodei.co/npm/coffeebar.png)](https://nodei.co/npm/coffeebar/)
 
 
 Coffeebar is a simplified build tool for CoffeeScript that makes compiling,
-watching and concatenating your files a breeze. Coffeebar is built to be 
+watching and concatenating your files a breeze. Coffeebar is built to be
 cross-platform from the ground up and can be used from the command line or
 via it's public API.
 
@@ -15,8 +15,8 @@ via it's public API.
 * Robust file watching
 * Cross-platform
 * Minification
-* Source maps generated from a concatenated file point back to the original files 
-* Compiler error messages show the original source line for concatenated files 
+* Source maps generated from a concatenated file point back to the original files
+* Compiler error messages show the original source line for concatenated files
 
 ## Installation
 
@@ -42,26 +42,26 @@ Install globally via npm:
 #### Examples
 
 Compile a single file:
-    
+
     $ coffeebar test.coffee
 
 Compile an entire directory tree to an output directory:
-    
-    $ coffeebar -o lib src 
+
+    $ coffeebar -o lib src
 
 Compile and join all input to a single file with a source map:
-    
-    $ coffeebar -Mo joined.js src 
+
+    $ coffeebar -Mo joined.js src
 
 Compile and watch for changes:
 
-    $ coffeebar -wo lib src 
+    $ coffeebar -wo lib src
 
 ## API
 
 #### coffeebar(inputPaths, [options])
 
-Compiles all .coffee files found in `inputPaths`, which can be a single string or an array of strings. 
+Compiles all .coffee files found in `inputPaths`, which can be a single string or an array of strings.
 
 ##### Options:
 

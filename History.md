@@ -1,3 +1,9 @@
+2/22/2016 - 1.0.0
+=================
+* Updated CoffeeScript to 1.10.0.
+* Updated all other dependencies.
+* Bumped version to 1.0.0.
+
 4/21/2015 - 0.5.0
 =================
 * Updated CoffeeScript to 1.9.2
