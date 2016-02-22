@@ -42,7 +42,7 @@ describe 'Compile', ->
     coffeebar "#{fixturePath}/compile", {output: "#{fixturePath}/compile/join.js"}
     testFile = fs.readFileSync "#{fixturePath}/compile/join.js", 'utf8'
     joinControl = fs.readFileSync "#{fixturePath}/control/join.js", 'utf8'
-  
+
     assert testFile.length
     assert.equal testFile, joinControl
 

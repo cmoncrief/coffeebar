@@ -11,15 +11,14 @@ task 'test', (options) ->
   if options.path
     testPath = path.join 'test/', "#{options.path}.coffee"
 
-  exec "NODE_ENV=test
-    ./node_modules/.bin/mocha
+  exec "./node_modules/.bin/mocha
     #{testPath}
     --compilers coffee:coffee-script
     --require coffee-script/register
     --colors
     --reporter spec
   ", (err, output) ->
-    throw err if err
+    console.log err if err
     console.log output
 
 task 'build', 'Compile CoffeeScript source files', ->
