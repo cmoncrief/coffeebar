@@ -32,8 +32,8 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "beholder": "^1.0.0",
-    "coffee-script": "1.10.0",
+    "beholder": "1.0.0",
+    "coffeescript": "^2.3.0",
     "commander": "^2.9.0",
     "glob": "^7.0.0",
     "mkdirp": "^0.5.1",
@@ -42,7 +42,7 @@
     "xcolor": "^0.1.0"
   },
   "devDependencies": {
-    "coffee-script": "1.10.0",
+    "coffeescript": "^2.3.0",
     "mocha": "^2.4.5",
     "rimraf": "^2.5.2"
   }
