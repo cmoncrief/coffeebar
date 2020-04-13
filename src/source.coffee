@@ -4,7 +4,7 @@ fs        = require 'fs'
 path      = require 'path'
 mkdirp    = require 'mkdirp'
 xcolor    = require 'xcolor'
-coffee    = require 'coffee-script'
+coffee    = require 'coffeescript'
 uglify    = require 'uglify-js'
 sourcemap = require 'source-map'
 
